@@ -1,0 +1,268 @@
+<div class="reports-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>
+        <div class="reports-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+          </svg>
+        </div>
+        Rapports et Analyses
+      </h1>
+      <p>Tableaux de bord analytiques et rapports détaillés SNCFT</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-primary" (click)="generateCustomReport()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+        </svg>
+        Nouveau Rapport
+      </button>
+      <button class="btn-secondary" (click)="exportAllData()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/>
+        </svg>
+        Exporter
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <div class="filter-group">
+      <div class="filter-label">Période</div>
+      <select class="filter-select" [(ngModel)]="selectedPeriod" (change)="onFilterChange()">
+        <option value="today">Aujourd'hui</option>
+        <option value="week">Cette semaine</option>
+        <option value="month">Ce mois</option>
+        <option value="quarter">Ce trimestre</option>
+        <option value="year">Cette année</option>
+        <option value="custom">Personnalisée</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <div class="filter-label">Type de rapport</div>
+      <select class="filter-select" [(ngModel)]="selectedType" (change)="onFilterChange()">
+        <option value="">Tous les types</option>
+        <option value="operations">Opérations</option>
+        <option value="financial">Financier</option>
+        <option value="maintenance">Maintenance</option>
+        <option value="hr">Ressources Humaines</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <div class="filter-label">Date de début</div>
+      <input type="date" class="date-input" [(ngModel)]="startDate" (change)="onFilterChange()">
+    </div>
+    <div class="filter-group">
+      <div class="filter-label">Date de fin</div>
+      <input type="date" class="date-input" [(ngModel)]="endDate" (change)="onFilterChange()">
+    </div>
+  </div>
+
+  <!-- Summary Section -->
+  <div class="summary-section">
+    <div class="summary-cards">
+      <div class="summary-card">
+        <div class="summary-header">
+          <div class="summary-title">Rapports générés</div>
+          <div class="summary-period">Ce mois</div>
+        </div>
+        <div class="summary-value">{{getTotalReports()}}</div>
+        <div class="summary-change" [ngClass]="getReportsChangeClass()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/>
+          </svg>
+          {{getReportsChange()}}%
+        </div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-header">
+          <div class="summary-title">Données exportées</div>
+          <div class="summary-period">Ce mois</div>
+        </div>
+        <div class="summary-value">{{getTotalExports()}}</div>
+        <div class="summary-change positive">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/>
+          </svg>
+          +15%
+        </div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-header">
+          <div class="summary-title">Temps moyen</div>
+          <div class="summary-period">Génération</div>
+        </div>
+        <div class="summary-value">{{getAverageTime()}}s</div>
+        <div class="summary-change negative">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16 18l2.29-2.29-4.88-4.88-4 4L2 7.41 3.41 6l6 6 4-4 6.3 6.29L22 12v6h-6z"/>
+          </svg>
+          -8%
+        </div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-header">
+          <div class="summary-title">Taille des données</div>
+          <div class="summary-period">Ce mois</div>
+        </div>
+        <div class="summary-value">{{getTotalDataSize()}}</div>
+        <div class="summary-change positive">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/>
+          </svg>
+          +22%
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reports Grid -->
+  <div class="reports-grid">
+    <div class="report-card" *ngFor="let report of filteredReports">
+      <!-- Report Header -->
+      <div class="report-header">
+        <div class="report-title">
+          <div class="report-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" *ngIf="report.type === 'operations'">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" *ngIf="report.type === 'financial'">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/>
+            </svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" *ngIf="report.type === 'maintenance'">
+              <path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/>
+            </svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" *ngIf="report.type === 'hr'">
+              <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zM4 18v-4h3v-3c0-1.1.9-2 2-2h2V7H9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2h2v2h2c1.1 0 2 .9 2 2v3h3v4H4z"/>
+            </svg>
+          </div>
+          <div class="title-content">
+            <h3>{{report.title}}</h3>
+            <div class="report-subtitle">{{report.description}}</div>
+          </div>
+        </div>
+        <div class="report-actions">
+          <button class="action-btn" (click)="refreshReport(report)" title="Actualiser">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+            </svg>
+          </button>
+          <button class="action-btn" (click)="configureReport(report)" title="Configurer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.82,11.69,4.82,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Report Stats -->
+      <div class="report-stats">
+        <div class="stats-grid">
+          <div class="stat-item">
+            <span class="stat-value">{{report.totalRecords}}</span>
+            <div class="stat-label">Enregistrements</div>
+            <div class="stat-trend positive">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/>
+              </svg>
+              +12%
+            </div>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">{{report.lastUpdate | date:'dd/MM'}}</span>
+            <div class="stat-label">Dernière MAJ</div>
+            <div class="stat-trend neutral">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+              À jour
+            </div>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">{{report.fileSize}}</span>
+            <div class="stat-label">Taille</div>
+            <div class="stat-trend negative">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M16 18l2.29-2.29-4.88-4.88-4 4L2 7.41 3.41 6l6 6 4-4 6.3 6.29L22 12v6h-6z"/>
+              </svg>
+              -5%
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Report Content -->
+      <div class="report-content">
+        <div class="content-section" *ngIf="report.topMetrics">
+          <div class="section-title">
+            <svg class="section-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/>
+            </svg>
+            Métriques Principales
+          </div>
+          <div class="progress-list">
+            <div class="progress-item" *ngFor="let metric of report.topMetrics">
+              <div class="progress-label">{{metric.label}}</div>
+              <div class="progress-bar">
+                <div class="progress-fill" [style.width.%]="metric.percentage"></div>
+              </div>
+              <div class="progress-value">{{metric.value}}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-section" *ngIf="report.recentData">
+          <div class="section-title">
+            <svg class="section-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+            </svg>
+            Données Récentes
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th *ngFor="let header of report.tableHeaders">{{header}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of report.recentData">
+                <td *ngFor="let cell of row">{{cell}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Report Actions -->
+      <div class="report-actions">
+        <button class="btn btn-primary" (click)="viewReport(report)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+          </svg>
+          Voir Détail
+        </button>
+        <button class="btn btn-export" (click)="exportReport(report, 'pdf')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+          </svg>
+          PDF
+        </button>
+        <button class="btn btn-success" (click)="exportReport(report, 'csv')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+          </svg>
+          CSV
+        </button>
+        <button class="btn btn-secondary" (click)="scheduleReport(report)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M16.2,16.2L11,13V7H12.5V12.2L17,14.7L16.2,16.2Z"/>
+          </svg>
+          Programmer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

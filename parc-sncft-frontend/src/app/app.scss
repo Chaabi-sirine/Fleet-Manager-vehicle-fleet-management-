@@ -1,0 +1,22 @@
+.app-layout {
+  margin-left: 260px; // Espace pour la sidebar
+  transition: margin-left 0.3s ease;
+}
+
+.main-content {
+  min-height: calc(100vh - 70px);
+  background-color: #f8fafc;
+}
+
+// Responsive design
+@media (max-width: 992px) {
+  .app-layout {
+    margin-left: 80px; // Sidebar compacte
+  }
+}
+
+@media (max-width: 768px) {
+  .app-layout {
+    margin-left: 0; // Pas de marge sur mobile, sidebar cachée
+  }
+}

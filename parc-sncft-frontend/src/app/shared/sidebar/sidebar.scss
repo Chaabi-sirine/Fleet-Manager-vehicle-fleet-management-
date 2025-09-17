@@ -1,0 +1,242 @@
+// Image sous le menu, centrée, marges, responsive
+.sidebar-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 200px 0 50px 0; /* espace haut augmenté */
+}
+
+.sidebar-profile-image {
+  max-width: 80%;
+  max-height: 100px;
+  border-radius: 16px;
+  background: transparent;
+  display: block;
+  box-shadow: none;
+}
+
+@media (max-width: 900px) {
+  .sidebar-profile-image {
+    max-width: 48px;
+    max-height: 48px;
+    margin: 0 auto;
+  }
+}
+.sidebar-logo {
+  display: block;
+  margin: 0 auto 12px auto;
+  max-width: 80%;
+  max-height: 80px;
+  border-radius: 12px;
+  background: transparent;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.sidebar-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 18px;
+  padding-bottom: 18px;
+}
+
+@media (max-width: 900px) {
+  .sidebar-logo {
+    max-width: 48px;
+    max-height: 48px;
+    margin-bottom: 6px;
+  }
+}
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 100vh;
+  background: linear-gradient(180deg, #0D47A1, #0a3d91);
+  color: white;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-header {
+  padding: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    
+    i {
+      font-size: 24px;
+      color: #FF6F00;
+    }
+    
+    h2 {
+      color: white;
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+  }
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 24px;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: #FF6F00;
+    transform: scaleY(0);
+    transition: all 0.2s ease;
+  }
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    padding-left: 32px;
+    
+    &::before {
+      transform: scaleY(1);
+    }
+  }
+  
+  &.active {
+    background: rgba(255, 111, 0, 0.2);
+    color: white;
+    padding-left: 32px;
+    
+    &::before {
+      transform: scaleY(1);
+    }
+    
+    i {
+      color: #FF6F00;
+    }
+  }
+  
+  i {
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+  }
+  
+  span {
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #FF6F00;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .user-info {
+    flex: 1;
+    
+    .user-name {
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    
+    .user-role {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 12px;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 992px) {
+  .sidebar {
+    width: 80px;
+    
+    .sidebar-header .logo {
+      justify-content: center;
+      
+      h2 {
+        display: none;
+      }
+    }
+    
+    .nav-item {
+      justify-content: center;
+      padding-left: 24px;
+      
+      span {
+        display: none;
+      }
+      
+      &:hover, &.active {
+        padding-left: 24px;
+      }
+    }
+    
+    .user-profile {
+      justify-content: center;
+      
+      .user-info {
+        display: none;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    
+    &.open {
+      transform: translateX(0);
+    }
+  }
+}

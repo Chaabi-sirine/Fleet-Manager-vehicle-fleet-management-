@@ -1,0 +1,257 @@
+.modern-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  white-space: nowrap;
+  user-select: none;
+  
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.2);
+  }
+  
+  &:disabled,
+  &.btn-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  
+  // Loading state
+  &.btn-loading {
+    cursor: wait;
+    
+    .btn-loader {
+      animation: spin 1s linear infinite;
+    }
+  }
+}
+
+// Sizes
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 14px;
+  min-height: 36px;
+  
+  &.btn-icon-only {
+    padding: 8px;
+    width: 36px;
+  }
+}
+
+.btn-md {
+  padding: 12px 20px;
+  font-size: 16px;
+  min-height: 44px;
+  
+  &.btn-icon-only {
+    padding: 12px;
+    width: 44px;
+  }
+}
+
+.btn-lg {
+  padding: 16px 24px;
+  font-size: 18px;
+  min-height: 52px;
+  
+  &.btn-icon-only {
+    padding: 16px;
+    width: 52px;
+  }
+}
+
+// Variants
+.btn-primary {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  color: white;
+  box-shadow: 0 4px 14px 0 rgba(30, 58, 138, 0.25);
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px 0 rgba(30, 58, 138, 0.35);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+  color: white;
+  box-shadow: 0 4px 14px 0 rgba(245, 158, 11, 0.25);
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px 0 rgba(245, 158, 11, 0.35);
+  }
+}
+
+.btn-outline {
+  background: transparent;
+  color: #1e3a8a;
+  border: 2px solid #1e3a8a;
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px 0 rgba(30, 58, 138, 0.25);
+  }
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #1e3a8a;
+  
+  &:hover:not(:disabled) {
+    background: rgba(30, 58, 138, 0.08);
+    transform: translateY(-1px);
+  }
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+  color: white;
+  box-shadow: 0 4px 14px 0 rgba(239, 68, 68, 0.25);
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px 0 rgba(239, 68, 68, 0.35);
+  }
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  color: white;
+  box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.25);
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px 0 rgba(16, 185, 129, 0.35);
+  }
+}
+
+// Modifiers
+.btn-full-width {
+  width: 100%;
+}
+
+.btn-rounded {
+  border-radius: 50px;
+}
+
+.btn-icon-only {
+  .btn-text {
+    display: none;
+  }
+}
+
+// Icon styles
+.btn-icon,
+.btn-icon-end {
+  font-size: 1.1em;
+  line-height: 1;
+}
+
+.btn-loader {
+  font-size: 1.1em;
+  line-height: 1;
+}
+
+// Animations
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Button groups
+.btn-group {
+  display: inline-flex;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  
+  .modern-btn {
+    border-radius: 0;
+    margin: 0;
+    
+    &:not(:last-child) {
+      border-right: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    &:first-child {
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+    
+    &:last-child {
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
+  }
+}
+
+// Floating Action Button
+.btn-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  
+  &:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .modern-btn {
+    &.btn-responsive {
+      width: 100%;
+      margin-bottom: 8px;
+    }
+  }
+  
+  .btn-group {
+    flex-direction: column;
+    
+    .modern-btn {
+      border-radius: 0;
+      border-right: none;
+      
+      &:not(:last-child) {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      
+      &:first-child {
+        border-radius: 10px 10px 0 0;
+      }
+      
+      &:last-child {
+        border-radius: 0 0 10px 10px;
+      }
+    }
+  }
+}

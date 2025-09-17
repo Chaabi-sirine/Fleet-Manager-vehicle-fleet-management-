@@ -1,0 +1,18 @@
+.vehicles-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background: rgb(231, 231, 231) !important; // TEST: couleur très visible
+}
+.vehicles-table th, .vehicles-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+.vehicles-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+.error {
+  color: #c00;
+  margin: 1rem 0;
+}

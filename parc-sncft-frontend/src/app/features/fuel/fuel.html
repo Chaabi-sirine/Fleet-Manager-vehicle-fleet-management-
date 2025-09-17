@@ -1,0 +1,542 @@
+<div class="fuel-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Gestion Carburant</h1>
+      <p>Bons & cartes carburant, suivi consommation</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="!showInlineBonForm && toggleInlineBonForm()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
+        </svg>
+        Nouveau Bon Carburant
+      </button>
+      <button class="btn btn-secondary" style="margin-left:8px;" (click)="!showCarteForm && toggleCarteForm()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
+        </svg>
+        Nouvelle Carte Carburant
+      </button>
+    <!-- Formulaire flottant de carte carburant -->
+    <div *ngIf="showCarteForm" class="inline-carte-form-overlay" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.2); z-index:1000; display:flex; align-items:center; justify-content:center;">
+      <div class="inline-carte-form" style="background:#fff; border:1px solid #ddd; padding:24px; border-radius:12px; min-width:340px; box-shadow:0 4px 24px rgba(0,0,0,0.12);">
+        <form (ngSubmit)="submitCarteForm()">
+          <h3 style="margin-top:0;">Créer une Carte Carburant</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="numeroCarte">Numéro de Carte *</label>
+              <input type="text" id="numeroCarte" [(ngModel)]="newCarteCarburant.numeroCarte" name="numeroCarte" required placeholder="Numéro de carte">
+            </div>
+            <div class="form-group">
+              <label for="dateExpiration">Date d'Expiration *</label>
+              <input type="date" id="dateExpiration" [(ngModel)]="newCarteCarburant.dateExpiration" name="dateExpiration" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="vehiculeCarte">Véhicule</label>
+              <input type="text" id="vehiculeCarte" [(ngModel)]="newCarteCarburant.vehiculeId" name="vehiculeCarte" placeholder="Véhicule assigné">
+            </div>
+            <div class="form-group">
+              <label for="soldeCarte">Solde (TND)</label>
+              <input type="number" id="soldeCarte" [(ngModel)]="newCarteCarburant.solde" name="soldeCarte" min="0" step="0.01" placeholder="Solde initial">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="codeCarte">Code</label>
+              <input type="text" id="codeCarte" [(ngModel)]="newCarteCarburant.code" name="codeCarte" placeholder="Code carte (optionnel)">
+            </div>
+            <div class="form-group">
+              <label for="fournisseurCarte">Fournisseur</label>
+              <input type="text" id="fournisseurCarte" [(ngModel)]="newCarteCarburant.fournisseur" name="fournisseurCarte" placeholder="Fournisseur (optionnel)">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="plafondCarte">Plafond Mensuel</label>
+              <input type="number" id="plafondCarte" [(ngModel)]="newCarteCarburant.plafondMensuel" name="plafondCarte" min="0" step="0.01" placeholder="Plafond mensuel (optionnel)">
+            </div>
+            <div class="form-group">
+              <label for="activeCarte">Active</label>
+              <input type="checkbox" id="activeCarte" [(ngModel)]="newCarteCarburant.active" name="activeCarte">
+            </div>
+          </div>
+          <div style="text-align:right; margin-top: 12px;">
+            <button type="submit" class="btn-submit">Créer la Carte</button>
+            <button type="button" class="btn-cancel" (click)="toggleCarteForm()" style="margin-left:8px;">Fermer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+      <button class="btn btn-primary" (click)="showRavitaillementForm = true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 11V7a3 3 0 0 0-6 0m6 4H8m6 0h1a3 3 0 0 1 3 3v1a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5v-1a3 3 0 0 1 3-3h1m0-4a3 3 0 0 1 6 0v4"></path>
+        </svg>
+        Enregistrer un ravitaillement
+      </button>
+      <div *ngIf="showRavitaillementForm" class="modal-overlay" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.2); z-index:1000; display:flex; align-items:center; justify-content:center;">
+        <div class="modal-container" style="background:#fff; border:1px solid #ddd; padding:24px; border-radius:12px; min-width:340px; box-shadow:0 4px 24px rgba(0,0,0,0.12);">
+          <form (ngSubmit)="submitRavitaillementForm()">
+            <h3 style="margin-top:0;">Enregistrer un ravitaillement</h3>
+            <div class="form-group">
+              <label for="dateRavitaillement">Date de ravitaillement *</label>
+              <input type="date" id="dateRavitaillement" [(ngModel)]="ravitaillement.dateRavitaillement" name="dateRavitaillement" required>
+            </div>
+            <div class="form-group">
+              <label for="quantite">Quantité (litres) *</label>
+              <input type="number" id="quantite" [(ngModel)]="ravitaillement.quantite" name="quantite" min="0" step="0.1" required>
+            </div>
+            <div class="form-group">
+              <label for="vehiculeId">Véhicule ID *</label>
+              <input type="text" id="vehiculeId" [(ngModel)]="ravitaillement.vehiculeId" name="vehiculeId" required>
+            </div>
+            <div class="form-group">
+              <label for="station">Station *</label>
+              <input type="text" id="station" [(ngModel)]="ravitaillement.station" name="station" required>
+            </div>
+            <div class="form-group">
+              <label for="montant">Montant (TND) *</label>
+              <input type="number" id="montant" [(ngModel)]="ravitaillement.montant" name="montant" min="0" step="0.01" required>
+            </div>
+            <div style="text-align:right; margin-top: 12px;">
+              <button type="submit" class="btn-submit">Enregistrer</button>
+              <button type="button" class="btn-cancel" (click)="showRavitaillementForm = false" style="margin-left:8px;">Fermer</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulaire flottant de bon carburant -->
+    <div *ngIf="showInlineBonForm" class="inline-bon-form-overlay" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.2); z-index:1000; display:flex; align-items:center; justify-content:center;">
+      <div class="inline-bon-form" style="background:#fff; border:1px solid #ddd; padding:24px; border-radius:12px; min-width:340px; box-shadow:0 4px 24px rgba(0,0,0,0.12);">
+        <form (ngSubmit)="submitBonForm()">
+          <h3 style="margin-top:0;">Créer un Bon Carburant</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="numeroBonInline">Numéro de Bon *</label>
+              <input type="text" id="numeroBonInline" [(ngModel)]="newBonCarburant.numeroBon" name="numeroBonInline" required>
+            </div>
+            <div class="form-group">
+              <label for="montantBonInline">Montant (TND) *</label>
+              <input type="number" id="montantBonInline" [(ngModel)]="newBonCarburant.montant" name="montantBonInline" min="0" step="0.001" required>
+            </div>
+            <div class="form-group">
+              <label for="dateEmissionInline">Date d'Émission *</label>
+              <input type="date" id="dateEmissionInline" [(ngModel)]="newBonCarburant.dateEmission" name="dateEmissionInline" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="stationBonInline">Station *</label>
+              <input type="text" id="stationBonInline" [(ngModel)]="newBonCarburant.station" name="stationBonInline" required placeholder="Nom de la station">
+            </div>
+            <div class="form-group">
+              <label for="vehiculeBonInline">Véhicule</label>
+              <input type="text" id="vehiculeBonInline" [(ngModel)]="newBonCarburant.vehiculeId" name="vehiculeBonInline" placeholder="Véhicule (ex: Bus Mercedes TUN-1234)">
+            </div>
+            <div class="form-group">
+              <label for="beneficiaireBonInline">Bénéficiaire</label>
+              <input type="text" id="beneficiaireBonInline" [(ngModel)]="newBonCarburant.utilisateurId" name="beneficiaireBonInline" placeholder="Nom du bénéficiaire">
+            </div>
+          </div>
+          <div style="text-align:right; margin-top: 12px;">
+            <button type="submit" class="btn-submit">Créer le Bon</button>
+            <button type="button" class="btn-cancel" (click)="toggleInlineBonForm()" style="margin-left:8px;">Fermer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- Statistiques -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 11V7a3 3 0 0 0-6 0m6 4H8m6 0h1a3 3 0 0 1 3 3v1a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5v-1a3 3 0 0 1 3-3h1m0-4a3 3 0 0 1 6 0v4"></path>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-number">{{totalConsumption}}L</div>
+        <div class="stat-label">Consommation ce mois</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+          <line x1="1" y1="10" x2="23" y2="10"></line>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-number">{{activeCards}}</div>
+        <div class="stat-label">Cartes actives</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-4"></path>
+          <polyline points="6,2 12,8 18,2"></polyline>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-number">{{pendingRecords}}</div>
+        <div class="stat-label">Bons en attente</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Liste des enregistrements -->
+  <div class="fuel-records">
+    <h2>Derniers Enregistrements</h2>
+    <div class="records-table">
+      <div class="table-header">
+        <div>Date</div>
+        <div>Véhicule</div>
+        <div>Quantité</div>
+        <div>Prix</div>
+        <div>Station</div>
+        <div>Actions</div>
+      </div>
+      <div class="table-row" *ngFor="let record of ravitaillementsVehicule">
+        <div>{{record.dateRavitaillement ? (record.dateRavitaillement | date:'dd/MM/yyyy') : (record.date | date:'dd/MM/yyyy')}}</div>
+        <div>{{record.vehiculeId || record.vehicle || '-'}}</div>
+        <div>{{record.quantite || record.quantity || '-'}}L</div>
+        <div>{{record.montantTotal || record.price | currency:'TND '}}</div>
+        <div>{{record.station || '-'}}</div>
+        <div class="actions">
+          <button class="btn-small btn-info" (click)="viewRecord(record)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de ravitaillement carburant -->
+<div class="modal-overlay" *ngIf="showAddCarburantModal" (click)="closeCarburantModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Nouveau Ravitaillement</h2>
+      <button class="modal-close-btn" (click)="closeCarburantModal()">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.3 5.71c-.39-.39-1.02-.39-1.41 0L12 10.59 7.11 5.7c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41L10.59 12 5.7 16.89c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0L12 13.41l4.89 4.89c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"/>
+        </svg>
+      </button>
+    </div>
+
+    <form class="modal-content" (ngSubmit)="submitCarburantForm()">
+      <div class="form-grid">
+        <!-- Informations du ravitaillement -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="section-icon">
+              <path d="M14 11V7a3 3 0 0 0-6 0m6 4H8m6 0h1a3 3 0 0 1 3 3v1a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5v-1a3 3 0 0 1 3-3h1m0-4a3 3 0 0 1 6 0v4"/>
+            </svg>
+            Détails du Ravitaillement
+          </h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="dateRavitaillement">Date & Heure *</label>
+              <input 
+                type="datetime-local" 
+                id="dateRavitaillement" 
+                [(ngModel)]="newCarburant.dateRavitaillement" 
+                name="dateRavitaillement"
+                required>
+            </div>
+
+            <div class="form-group">
+              <label for="typeCarburant">Type de Carburant *</label>
+              <select id="typeCarburant" [(ngModel)]="newCarburant.typeCarburant" name="typeCarburant" required>
+                <option *ngFor="let type of typesCarburant" [value]="type">{{type}}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="quantite">Quantité (litres) *</label>
+              <input 
+                type="number" 
+                id="quantite" 
+                [(ngModel)]="newCarburant.quantite" 
+                name="quantite"
+                min="0"
+                step="0.1"
+                (input)="calculateMontantTotal()"
+                required>
+            </div>
+
+            <div class="form-group">
+              <label for="prixUnitaire">Prix Unitaire (TND) *</label>
+              <input 
+                type="number" 
+                id="prixUnitaire" 
+                [(ngModel)]="newCarburant.prixUnitaire" 
+                name="prixUnitaire"
+                min="0"
+                step="0.001"
+                (input)="calculateMontantTotal()"
+                required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="montantTotal">Montant Total (TND)</label>
+            <input 
+              type="number" 
+              id="montantTotal" 
+              [(ngModel)]="newCarburant.montantTotal" 
+              name="montantTotal"
+              min="0"
+              step="0.001"
+              readonly
+              style="background: #f3f4f6;">
+          </div>
+
+          <div class="form-group">
+            <label for="station">Station *</label>
+            <select id="station" [(ngModel)]="newCarburant.station" name="station" required>
+              <option value="">Sélectionner une station</option>
+              <option *ngFor="let station of stations" [value]="station">{{station}}</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Mode de paiement -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="section-icon">
+              <path d="M2 10h20v4H2v-4zm0-4h20v2H2V6zm0 10h20v2H2v-2z"/>
+            </svg>
+            Mode de Paiement
+          </h3>
+
+          <div class="form-group">
+            <label for="modeUtilisation">Mode d'Utilisation *</label>
+            <select id="modeUtilisation" [(ngModel)]="newCarburant.modeUtilisation" name="modeUtilisation" (change)="onModeUtilisationChange()" required>
+              <option value="CARTE">Carte Carburant</option>
+              <option value="BON">Bon Carburant</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="numeroPiece">
+              {{newCarburant.modeUtilisation === 'BON' ? 'Numéro de Bon' : 'Numéro de Carte'}}
+              {{newCarburant.modeUtilisation === 'BON' ? '*' : ''}}
+            </label>
+            <input 
+              type="text" 
+              id="numeroPiece" 
+              [(ngModel)]="newCarburant.numeroPiece" 
+              name="numeroPiece"
+              [placeholder]="newCarburant.modeUtilisation === 'BON' ? 'Ex: BON-2025-001' : 'Ex: 1234-5678-9012'"
+              [required]="newCarburant.modeUtilisation === 'BON'">
+          </div>
+        </div>
+
+        <!-- Affectation -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="section-icon">
+              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/>
+            </svg>
+            Affectation
+          </h3>
+
+          <div class="form-group">
+            <label for="vehicule">Véhicule *</label>
+            <select id="vehicule" [(ngModel)]="newCarburant.vehiculeId" name="vehicule" required>
+              <option value="">Sélectionner un véhicule</option>
+              <option *ngFor="let vehicule of vehiculesDisponibles" [value]="vehicule.id">
+                {{vehicule.nom}}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="conducteur">Conducteur *</label>
+            <select id="conducteur" [(ngModel)]="newCarburant.utilisateurId" name="conducteur" required>
+              <option value="">Sélectionner un conducteur</option>
+              <option *ngFor="let conducteur of conducteurs" [value]="conducteur.id">
+                {{conducteur.nom}}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="mission">Mission (optionnel)</label>
+            <select id="mission" [(ngModel)]="newCarburant.missionId" name="mission">
+              <option value="">Aucune mission spécifique</option>
+              <option *ngFor="let mission of missionsDisponibles" [value]="mission.id">
+                {{mission.nom}}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="kilometrage">Kilométrage Actuel</label>
+            <input 
+              type="number" 
+              id="kilometrage" 
+              [(ngModel)]="newCarburant.kilometrageActuel" 
+              name="kilometrage"
+              min="0"
+              placeholder="Kilométrage au moment du ravitaillement">
+          </div>
+        </div>
+
+        <!-- Commentaires -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="section-icon">
+              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 2 2h12c1.11 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/>
+            </svg>
+            Commentaires
+          </h3>
+
+          <div class="form-group">
+            <label for="commentaire">Remarques (optionnel)</label>
+            <textarea 
+              id="commentaire" 
+              [(ngModel)]="newCarburant.commentaire" 
+              name="commentaire"
+              rows="3"
+              placeholder="Observations particulières sur ce ravitaillement..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" (click)="closeCarburantModal()">
+          Annuler
+        </button>
+        <button type="submit" class="btn-submit">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px; margin-right: 8px;">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+          </svg>
+          Enregistrer le Ravitaillement
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal de création de bon carburant -->
+<div class="modal-overlay" *ngIf="showAddBonModal" (click)="closeBonModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Créer un Bon Carburant</h2>
+      <button class="modal-close-btn" (click)="closeBonModal()">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.3 5.71c-.39-.39-1.02-.39-1.41 0L12 10.59 7.11 5.7c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41L10.59 12 5.7 16.89c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0L12 13.41l4.89 4.89c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"/>
+        </svg>
+      </button>
+    </div>
+
+    <form class="modal-content" (ngSubmit)="submitBonForm()">
+      <div class="form-grid">
+        <div class="form-section">
+          <h3 class="section-title">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="section-icon">
+              <path d="M9 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-4"/>
+            </svg>
+            Informations du Bon
+          </h3>
+          
+          <div class="form-group">
+            <label for="numeroBon">Numéro de Bon *</label>
+            <input 
+              type="text" 
+              id="numeroBon" 
+              [(ngModel)]="newBonCarburant.numeroBon" 
+              name="numeroBon"
+              placeholder="Ex: BON-2025-001"
+              required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="montantBon">Montant (TND) *</label>
+              <input 
+                type="number" 
+                id="montantBon" 
+                [(ngModel)]="newBonCarburant.montant" 
+                name="montantBon"
+                min="0"
+                step="0.001"
+                required>
+            </div>
+
+            <div class="form-group">
+              <label for="dateEmission">Date d'Émission *</label>
+              <input 
+                type="date" 
+                id="dateEmission" 
+                [(ngModel)]="newBonCarburant.dateEmission" 
+                name="dateEmission"
+                required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="stationBon">Station d'Utilisation *</label>
+            <select id="stationBon" [(ngModel)]="newBonCarburant.station" name="stationBon" required>
+              <option value="">Sélectionner une station</option>
+              <option *ngFor="let station of stations" [value]="station">{{station}}</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="vehiculeBon">Véhicule Affecté</label>
+              <select id="vehiculeBon" [(ngModel)]="newBonCarburant.vehiculeId" name="vehiculeBon">
+                <option value="">Aucun véhicule spécifique</option>
+                <option *ngFor="let vehicule of vehiculesDisponibles" [value]="vehicule.id">
+                  {{vehicule.nom}}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="utilisateurBon">Utilisateur Responsable</label>
+              <select id="utilisateurBon" [(ngModel)]="newBonCarburant.utilisateurId" name="utilisateurBon">
+                <option value="">Aucun utilisateur spécifique</option>
+                <option *ngFor="let conducteur of conducteurs" [value]="conducteur.id">
+                  {{conducteur.nom}}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" (click)="closeBonModal()">
+          Annuler
+        </button>
+        <button type="submit" class="btn-submit">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px; margin-right: 8px;">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+          </svg>
+          Créer le Bon
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

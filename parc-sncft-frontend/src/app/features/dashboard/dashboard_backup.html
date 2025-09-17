@@ -1,0 +1,218 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>🚄 Tableau de Bord SNCFT</h1>
+    <p>Vue d'ensemble et statistiques en temps réel</p>
+    <d                  <div class="quick-actions-grid">
+          <app-button variant="primary" icon="🚗" [fullWidth]="true" [routerLink]="['/vehicles']">
+            Nouveau véhicule
+          </app-button>
+          <app-button variant="secondary" icon="📋" [fullWidth]="true" [routerLink]="['/missions']">
+            Créer mission
+          </app-button>
+          <app-button variant="outline" icon="⛽" [fullWidth]="true" [routerLink]="['/fuel']">
+            Gestion carburant
+          </app-button>
+          <app-button variant="ghost" icon="📊" [fullWidth]="true" [routerLink]="['/reports']">
+            Générer rapport
+          </app-button>
+        </div>riant="primary" icon="🚗" [fullWidth]="true" [routerLink]="['/vehicles']">
+            Nouveau véhicule
+          </app-button>
+          <app-button variant="secondary" icon="📋" [fullWidth]="true" [routerLink]="['/missions']">
+            Créer mission
+          </app-button>
+          <app-button variant="outline" icon="⛽" [fullWidth]="true" [routerLink]="['/fuel']">
+            Gestion carburant
+          </app-button>
+          <app-button variant="ghost" icon="📊" [fullWidth]="true" [routerLink]="['/reports']">
+            Générer rapport
+          </app-button>ader-actions">
+      <app-button variant="ghost" icon="🔄" size="sm">Actualiser</app-button>
+      <app-button variant="primary" icon="📊" size="sm">Rapport</app-button>
+    </div>
+  </div>
+
+  <!-- Statistiques principales -->
+  <div class="stats-grid">
+    <app-stat-card
+      title="Véhicules"
+      subtitle="Total actifs"
+      [value]="totalVehicles"
+      icon="🚗"
+      variant="primary"
+      [trend]="{ type: 'up', value: 5.2 }"
+      footerText="Dernière mise à jour il y a 5 min"
+      [progress]="85">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Missions"
+      subtitle="En cours aujourd'hui"
+      [value]="activeMissions"
+      icon="📋"
+      variant="secondary"
+      [trend]="{ type: 'up', value: 12.5 }"
+      footerText="3 nouvelles missions"
+      [progress]="65">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Carburant"
+      subtitle="Consommation ce mois"
+      [value]="fuelConsumption"
+      unit="L"
+      icon="⛽"
+      variant="success"
+      [trend]="{ type: 'down', value: 8.3 }"
+      footerText="Économie de 200L vs mois dernier"
+      [progress]="45">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Utilisateurs"
+      subtitle="Personnel actif"
+      [value]="totalUsers"
+      icon="👥"
+      variant="info"
+      [trend]="{ type: 'neutral', value: 0 }"
+      footerText="28 connectés aujourd'hui"
+      [progress]="92">
+    </app-stat-card>
+  </div>
+
+  <!-- Graphiques et tableaux -->
+  <div class="dashboard-content">
+    <div class="content-row">
+      <!-- Missions récentes -->
+      <app-card
+        title="🚀 Missions Récentes"
+        subtitle="Activité du jour"
+        icon="📋">
+        
+        <div slot="actions">
+          <app-button variant="ghost" size="sm" icon="🔄" [iconOnly]="true"></app-button>
+          <app-button variant="outline" size="sm" [routerLink]="['/missions']">Voir tout →</app-button>
+        </div>
+
+        <div class="missions-list">
+          <div class="mission-item modern" *ngFor="let mission of recentMissions">
+            <div class="mission-icon">
+              <span class="status-dot" [class]="'dot-' + mission.status"></span>
+            </div>
+            <div class="mission-info">
+              <div class="mission-title">{{mission.title}}</div>
+              <div class="mission-date">{{mission.date | date:'short':'fr'}}</div>
+            </div>
+            <div class="mission-status" [class]="'status-' + mission.status">
+              {{getMissionStatusLabel(mission.status)}}
+            </div>
+          </div>
+        </div>
+      </app-card>
+
+      <!-- Véhicules en maintenance -->
+      <app-card
+        title="🔧 Maintenance"
+        subtitle="Véhicules en intervention"
+        icon="🚗">
+        
+        <div slot="actions">
+          <app-button variant="ghost" size="sm" icon="➕" [iconOnly]="true"></app-button>
+          <app-button variant="outline" size="sm" [routerLink]="['/vehicles']">Voir tout →</app-button>
+        </div>
+
+        <div class="vehicles-list">
+          <div class="vehicle-item modern" *ngFor="let vehicle of maintenanceVehicles">
+            <div class="vehicle-avatar">
+              {{getVehicleEmoji(vehicle.name)}}
+            </div>
+            <div class="vehicle-info">
+              <div class="vehicle-name">{{vehicle.name}}</div>
+              <div class="vehicle-plate">{{vehicle.plateNumber}}</div>
+            </div>
+            <div class="maintenance-type">
+              <span class="maintenance-badge">{{vehicle.maintenanceType}}</span>
+            </div>
+          </div>
+        </div>
+      </app-card>
+    </div>
+
+    <!-- Section Performance et Analytics -->
+    <div class="content-row">
+      <app-card
+        title="📊 Performance Mensuelle"
+        subtitle="Analyse des KPIs"
+        icon="📈">
+        
+        <div slot="actions">
+          <app-button variant="ghost" size="sm" icon="📅" [iconOnly]="true"></app-button>
+          <app-button variant="outline" size="sm">Détails →</app-button>
+        </div>
+
+        <div class="performance-metrics">
+          <div class="metric-row">
+            <div class="metric">
+              <div class="metric-label">Efficacité flotte</div>
+              <div class="metric-value">92%</div>
+              <div class="metric-progress">
+                <div class="progress-bar" style="width: 92%"></div>
+              </div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Ponctualité</div>
+              <div class="metric-value">87%</div>
+              <div class="metric-progress">
+                <div class="progress-bar secondary" style="width: 87%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="metric-row">
+            <div class="metric">
+              <div class="metric-label">Satisfaction client</div>
+              <div class="metric-value">94%</div>
+              <div class="metric-progress">
+                <div class="progress-bar success" style="width: 94%"></div>
+              </div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Économie carburant</div>
+              <div class="metric-value">78%</div>
+              <div class="metric-progress">
+                <div class="progress-bar warning" style="width: 78%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </app-card>
+
+      <!-- Quick Actions -->
+      <app-card
+        title="⚡ Actions Rapides"
+        subtitle="Raccourcis fréquents"
+        icon="🎯">
+
+        <div class="quick-actions-grid">
+          <app-button variant="primary" icon="�" fullWidth="true" [routerLink]="['/vehicles']">
+            Nouveau véhicule
+          </app-button>
+          <app-button variant="secondary" icon="📋" fullWidth="true" [routerLink]="['/missions']">
+            Créer mission
+          </app-button>
+          <app-button variant="outline" icon="⛽" fullWidth="true" [routerLink]="['/fuel']">
+            Gestion carburant
+          </app-button>
+          <app-button variant="ghost" icon="📊" fullWidth="true" [routerLink]="['/reports']">
+            Générer rapport
+          </app-button>
+        </div>
+
+        <div slot="footer">
+          <div class="footer-actions">
+            <span class="footer-info">💡 Astuce: Utilisez Ctrl+N pour une nouvelle mission</span>
+          </div>
+        </div>
+      </app-card>
+    </div>
+  </div>
+</div>

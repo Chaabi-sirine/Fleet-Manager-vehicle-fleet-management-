@@ -1,0 +1,42 @@
+<div *ngIf="loading">Chargement des véhicules...</div>
+<div *ngIf="error" class="error">{{ error }}</div>
+<div *ngIf="!loading && !error" class="vehicles-list-container">
+  <table *ngIf="vehicles.length > 0" class="vehicles-table">
+    <thead>
+      <tr style="background-color: white; color: orange;">
+        <th class="id">ID</th>
+        <th class="immatriculation">Immatriculation</th>
+        <th class="marque">Marque</th>
+        <th class="modele">Modèle</th>
+        <th class="annee">Année</th>
+        <th class="categorie">Catégorie</th>
+        <th class="departement">Département</th>
+        <th class="kilometrage">Kilométrage</th>
+        <th class="statut">Statut</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let v of vehicles">
+        <td class="id">{{ v._id }}</td>
+        <td class="immatriculation">{{ v.immatriculation }}</td>
+        <td class="marque" [attr.title]="v.marque">{{ v.marque }}</td>
+        <td class="modele" [attr.title]="v.modele">{{ v.modele }}</td>
+        <td class="annee">{{ v.annee }}</td>
+        <td class="categorie">{{ v.categorie }}</td>
+        <td class="departement" [attr.title]="v.departement">{{ v.departement }}</td>
+        <td class="kilometrage">{{ v.kilometrageActuel }}</td>
+        <td class="statut">
+          <span class="status-pill"
+            [ngClass]="{
+              'actif': v.statut === 'ACTIF',
+              'maintenance': v.statut === 'MAINTENANCE',
+              'hors-service': v.statut === 'HORS_SERVICE',
+              'en-attente': v.statut === 'EN_ATTENTE'
+            }"
+          >{{ v.statut }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="vehicles.length === 0">Aucun véhicule trouvé.</div>
+</div>

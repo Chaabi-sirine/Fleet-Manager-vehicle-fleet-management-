@@ -1,0 +1,279 @@
+.stat-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  // Accent border based on variant
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+  
+  &.stat-primary::before { background: linear-gradient(90deg, #2563eb, #60a5fa); }
+  &.stat-secondary::before { background: linear-gradient(90deg, #f97316, #fb923c); }
+  &.stat-success::before { background: linear-gradient(90deg, #10b981, #34d399); }
+  &.stat-warning::before { background: linear-gradient(90deg, #f97316, #fb923c); }
+  &.stat-danger::before { background: linear-gradient(90deg, #ef4444, #f87171); }
+  &.stat-info::before { background: linear-gradient(90deg, #2563eb, #60a5fa); }
+}
+
+.stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  
+  .stat-icon {
+    font-size: 28px;
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  
+  .stat-trend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    
+    &.trend-up {
+      background: rgba(16, 185, 129, 0.1);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    
+    &.trend-down {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+    
+    &.trend-neutral {
+      background: rgba(107, 114, 128, 0.1);
+      color: #6b7280;
+      border: 1px solid rgba(107, 114, 128, 0.2);
+    }
+    
+    .trend-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      svg {
+        display: block;
+      }
+    }
+    
+    .trend-value {
+      font-weight: 700;
+      letter-spacing: 0.025em;
+    }
+  }
+}
+
+.stat-content {
+  .stat-value {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-bottom: 8px;
+    
+    .stat-number {
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 1;
+      
+      // Animation d'apparition du nombre
+      animation: countUp 0.8s ease-out;
+    }
+    
+    .stat-unit {
+      font-size: 18px;
+      font-weight: 500;
+      opacity: 0.7;
+    }
+  }
+  
+  .stat-info {
+    .stat-title {
+      color: #374151;
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0 0 4px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .stat-subtitle {
+      color: #6b7280;
+      font-size: 13px;
+      margin: 0;
+      line-height: 1.4;
+    }
+  }
+}
+
+.stat-footer {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #f3f4f6;
+  
+  .footer-text {
+    color: #6b7280;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    
+    &::before {
+      content: '';
+      width: 12px;
+      height: 12px;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='%236b7280' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 9.74C4.46 10.97 4 12.43 4 14c0 4.42 3.58 8 8 8v3l4-4-4-4v3z'/%3E%3C/svg%3E") no-repeat center;
+      opacity: 0.7;
+    }
+  }
+}
+
+.stat-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #f3f4f6;
+  
+  .progress-bar {
+    height: 100%;
+    border-radius: 0 0 16px 16px;
+    transition: width 1s ease-out;
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+      animation: shimmer 2s infinite;
+    }
+  }
+}
+
+// Variants spéciaux
+.stat-card {
+  &.stat-gradient-primary {
+    background: linear-gradient(135deg, #0D47A1 0%, #1565C0 100%);
+    color: white;
+    
+    .stat-content .stat-info .stat-title,
+    .stat-content .stat-info .stat-subtitle,
+    .stat-footer .footer-text {
+      color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .stat-icon {
+      background: rgba(255, 255, 255, 0.2) !important;
+    }
+  }
+  
+  &.stat-gradient-secondary {
+    background: linear-gradient(135deg, #FF6F00 0%, #FF8F00 100%);
+    color: white;
+    
+    .stat-content .stat-info .stat-title,
+    .stat-content .stat-info .stat-subtitle,
+    .stat-footer .footer-text {
+      color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .stat-icon {
+      background: rgba(255, 255, 255, 0.2) !important;
+    }
+  }
+}
+
+// Loading state
+.stat-card.loading {
+  .stat-value .stat-number {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    color: transparent;
+    border-radius: 4px;
+    height: 40px;
+    width: 80px;
+  }
+}
+
+// Animations
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .stat-card {
+    padding: 20px;
+    
+    .stat-header {
+      .stat-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 24px;
+      }
+    }
+    
+    .stat-content .stat-value .stat-number {
+      font-size: 28px;
+    }
+  }
+}

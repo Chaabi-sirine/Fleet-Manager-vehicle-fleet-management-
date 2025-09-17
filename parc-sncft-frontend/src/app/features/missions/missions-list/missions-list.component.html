@@ -1,0 +1,24 @@
+<div class="missions-list">
+  <h2>Liste des missions</h2>
+  <ul>
+    <li *ngFor="let mission of missions">
+      <span>{{ mission.description }} - {{ mission.date_debut }}</span>
+      <button (click)="showDetails(mission)">Détails</button>
+    </li>
+  </ul>
+
+  <!-- Modal pour les détails de la mission (en dehors de la liste) -->
+  <div *ngIf="showModal && selectedMission" class="modal-overlay">
+    <div class="modal-content">
+      <h3>Détails de la mission</h3>
+      <span>Date de départ : {{ selectedMission.date_debut }}</span><br>
+      <span>Véhicule : {{ selectedMission.vehicule?.nom || selectedMission.vehicule?.matricule || '-' }}</span><br>
+      <span>Trajet : {{ selectedMission.itineraire }}</span><br>
+      <span>Conducteur : {{ selectedMission.utilisateur?.nom || selectedMission.utilisateur?.prenom || '-' }}</span><br>
+      <span>Statut : {{ selectedMission.statut }}</span><br>
+      <span>Date de fin : {{ selectedMission.date_fin }}</span><br>
+      <span>Description : {{ selectedMission.description }}</span><br>
+      <button (click)="closeModal()">Fermer</button>
+    </div>
+  </div>
+</div>
